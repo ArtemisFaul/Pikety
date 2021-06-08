@@ -1,42 +1,34 @@
 package com.example.pikety;
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.widget.Toast;
 
-import com.example.pikety.api.*;
-import com.example.pikety.fragments.*;
+import com.example.pikety.api.PiketSession;
+import com.example.pikety.fragments.HomeFragment;
+import com.example.pikety.fragments.LoginFragment;
+import com.yandex.mapkit.MapKitFactory;
 
-import androidx.annotation.NonNull;
 
-import java.util.Date;
-import java.util.List;
-
-import me.grishka.appkit.FragmentStackActivity;
-import me.grishka.appkit.api.Callback;
-import me.grishka.appkit.api.ErrorResponse;
-
-public class MainActivity extends FragmentStackActivity {
-
-    private static final int PERMISSION_RESULT = 270;
+public class MainActivity extends AppCompatActivity {
+    FragmentTransaction fTrans;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-
+        fTrans = getFragmentManager().beginTransaction();
         if (PiketSession.isLoggedIn()) {
-            showFragment(new HomeFragment());
+            fTrans.add(R.id.frgmCont, new HomeFragment());
         } else {
-            showFragment(new LoginFragment());
+            fTrans.add(R.id.frgmCont, new LoginFragment());
         }
+        fTrans.commit();
+
     }
 }

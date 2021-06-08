@@ -1,8 +1,6 @@
 package com.example.pikety.api;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import com.example.pikety.App;
 import com.example.pikety.api.model.*;
 import java.util.UUID;

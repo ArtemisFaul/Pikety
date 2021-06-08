@@ -19,8 +19,6 @@
     <string name="complete_registration">Complete registration</string>
     <string name="all_fields_are_required">All fields are required</string>
     <string name="username_limit">Username can\'t be longer than 16 characters</string>
-    <string name="register_warning">Registration in this <b>unofficial</b> app is as experimental a feature as the app itself. There\'s always a non-zero possibility of a ban if you don\'t use the official app to register. It would work better if you borrow an iOS device from someone, but you could still try registering from Android.\n\nPlease be aware that you\'ll only be able to change your name <b>once</b> after you register. Please use your real name.</string>
-    <string name="welcome_to_clubhouse">Welcome to Clubhouse!</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="save">Save</string>

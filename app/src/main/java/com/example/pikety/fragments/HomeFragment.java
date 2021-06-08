@@ -1,56 +1,36 @@
 package com.example.pikety.fragments;
 
-import android.app.Activity;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Outline;
-import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
-import android.widget.ImageView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.pikety.MainActivity;
+import com.example.pikety.PiketActivity;
+import com.example.pikety.R;
 import com.example.pikety.api.model.Picket;
+import com.example.pikety.api.model.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.example.pikety.R;
-import com.example.pikety.api.model.Worker;
 
-import me.grishka.appkit.fragments.BaseRecyclerFragment;
-import me.grishka.appkit.imageloader.ImageLoaderRecyclerAdapter;
-import me.grishka.appkit.imageloader.ImageLoaderViewHolder;
-import me.grishka.appkit.utils.BindableViewHolder;
-import me.grishka.appkit.utils.V;
+public class HomeFragment extends Fragment {
+    private ListView listView;
+    private List<Picket> pickets;
+    //private PicketAdapter adapter;
+    public HomeFragment() {super();}
 
-public class HomeFragment extends BaseRecyclerFragment<Picket> {
-
-    private PicketAdapter adapter;
-
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-        loadData();
-        setHasOptionsMenu(false);
-    }
-
-    public HomeFragment() {super(20);}
-
-    @Override
-    protected void doLoadData(int offset, int count) {
-        List<Picket> pickets = new ArrayList<Picket>(){
+    protected void loadData() {
+        pickets = new ArrayList<Picket>(){
             {
                 add(new Picket(){
                     {
@@ -58,8 +38,8 @@ public class HomeFragment extends BaseRecyclerFragment<Picket> {
                         setCompanyId(1);
                         setCompanyName("Company1");
                         setDescription("SetDescription");
-                        setLatitude(0D);
-                        setLongitude(0D);
+                        setLatitude(55.683625D);
+                        setLongitude(37.574080D);
                         setPositionAddress("positionAddress");
                         setWorkers(new ArrayList<Worker>(){
                             {
@@ -85,8 +65,8 @@ public class HomeFragment extends BaseRecyclerFragment<Picket> {
                         setCompanyId(2);
                         setCompanyName("Company2");
                         setDescription("SetDescription");
-                        setLatitude(1D);
-                        setLongitude(1D);
+                        setLatitude(59.945933D);
+                        setLongitude(30.320045D);
                         setPositionAddress("positionAddress2");
                         setWorkers(new ArrayList<Worker>(){
                             {
@@ -114,101 +94,54 @@ public class HomeFragment extends BaseRecyclerFragment<Picket> {
                 });
             }
         };
-        onDataLoaded(pickets, false);
     }
 
     @Override
-    protected RecyclerView.Adapter getAdapter() {
-        if(adapter==null){
-            adapter=new PicketAdapter();
-            adapter.setHasStableIds(true);
-        }
-        return adapter;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
-        super.onViewCreated(view, savedInstanceState);
-        list.addItemDecoration(new RecyclerView.ItemDecoration(){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.home, container, false);
+        listView = view.findViewById(R.id.listViewID);
+        loadData();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state){
-                outRect.bottom=outRect.top=V.dp(8);
-                outRect.left=outRect.right=V.dp(16);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Picket item = pickets.get(position);
+                Intent intent = new Intent(parent.getContext(), PiketActivity.class);
+                intent.putExtra(Picket.class.getCanonicalName(), item);
+                startActivity(intent);
             }
         });
-        getToolbar().setElevation(0);
+        listView.setAdapter(new PicketAdapter(this.getContext(), pickets));
+        return view;
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig){
-        super.onConfigurationChanged(newConfig);
-        getToolbar().setElevation(0);
-    }
-
-    @Override
-    public boolean wantsLightNavigationBar(){
-        return true;
-    }
-
-    @Override
-    public boolean wantsLightStatusBar(){
-        return true;
-    }
-
-
-
-    private class PicketAdapter extends RecyclerView.Adapter<PicketViewHolder>  {
-
-        @NonNull
-        @Override
-        public PicketViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-            return new PicketViewHolder();
+    private class PicketAdapter extends ArrayAdapter<Picket>{
+        public PicketAdapter(Context context, List<Picket> pickets){
+            super(context, R.layout.piket_row, pickets);
         }
-
         @Override
-        public void onBindViewHolder(@NonNull PicketViewHolder holder, int position){
-            holder.bind(data.get(position));
-        }
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Picket picket = getItem(position);
 
-        @Override
-        public int getItemCount(){
-            return data.size();
-        }
-
-        @Override
-        public long getItemId(int position){
-            return data.get(position).id;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext())
+                        .inflate(R.layout.piket_row, null);
+            }
+            ((TextView) convertView.findViewById(R.id.name))
+                    .setText(picket.name);
+            ((TextView) convertView.findViewById(R.id.description))
+                    .setText(picket.description);
+            ((TextView) convertView.findViewById(R.id.position_address))
+                    .setText(picket.positionAddress);
+            ((TextView) convertView.findViewById(R.id.company_name))
+                    .setText(picket.companyName);
+            ((TextView) convertView.findViewById(R.id.workers))
+                    .setText(picket.workers.stream().map(w-> w.name).collect(Collectors.joining("\n")));
+            return convertView;
         }
     }
 
-    private class PicketViewHolder extends BindableViewHolder<Picket> implements View.OnClickListener {
-        private TextView companyName, name, description, positionAddress, workers;
 
-        public PicketViewHolder(){
-            super(getActivity(), R.layout.piket_row);
-            companyName=findViewById(R.id.company_name);
-            name=findViewById(R.id.name);
-            description=findViewById(R.id.description);
-            positionAddress=findViewById(R.id.position_address);
-            workers=findViewById(R.id.workers);
-            itemView.setClipToOutline(true);
-            itemView.setElevation(V.dp(2));
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onBind(Picket item){
-            companyName.setText(item.companyName);
-            name.setText(item.name);
-            description.setText(item.description);
-            positionAddress.setText(item.positionAddress);
-            workers.setText(item.workers.stream().map(w-> w.name).collect(Collectors.joining("\n")));
-        }
-
-        @Override
-        public void onClick(View view){
-            //((MainActivity)getActivity()).joinChannel(item);
-        }
-    }
 }
 

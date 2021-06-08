@@ -22,7 +22,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/white_round_rectangle"
             android:gravity="center_vertical"
             android:padding="4dp">
 
@@ -32,8 +31,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 app:ccp_enableHint="false"
-                app:ccp_hidePhoneCode="true"
-                app:ccp_hideNameCode="true" />
+                app:ccp_hideNameCode="true"
+                app:ccp_hidePhoneCode="true" />
 
             <EditText
                 android:id="@+id/phone_input"
@@ -53,7 +52,6 @@
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/white_round_rectangle"
             android:gravity="center"
             android:hint="@string/sms_code"
             android:inputType="number"
@@ -65,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,7 +84,6 @@
                 android:padding="4dp"
                 android:text="@string/resend_code_button"
                 android:textAllCaps="false"
-                android:textColor="@color/text_gray"
                 android:textStyle="normal" />
 
         </LinearLayout>
